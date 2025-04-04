@@ -1,41 +1,54 @@
-let score = 0; // Начальный счет
-let upgrade1Cost = 10; // Стоимость улучшения 1
-let upgrade2Cost = 50; // Стоимость улучшения 2
+let clickCount = 0;
+let autoClickerCost = 100;
+let speedUpCost = 50;
+let autoClickerActive = false;
+let speedUpActive = false;
 
-const counterElement = document.getElementById('counter');
-const clickButton = document.getElementById('clickButton');
-const upgrade1Button = document.getElementById('upgrade1');
-const upgrade2Button = document.getElementById('upgrade2');
+const clickButton = document.getElementById('click-button');
+const clickCountDisplay = document.getElementById('click-count');
+const buyAutoClickerButton = document.getElementById('buy-auto-clicker');
+const buySpeedUpButton = document.getElementById('buy-speed-up');
 
 // Обработчик кликов по кнопке
 clickButton.addEventListener('click', () => {
-    score++; // Увеличиваем счет
-    updateUI(); // Обновляем интерфейс
+  clickCount++;
+  updateClickCount();
+  if (speedUpActive) {
+    clickCount++; // Ускорение кликов
+    updateClickCount();
+  }
 });
 
-// Функция для обновления интерфейса
-function updateUI() {
-    counterElement.textContent = `Очков: ${score}`; // Обновляем счет
-    // Проверяем, можем ли купить улучшения
-    upgrade1Button.disabled = score < upgrade1Cost; // Если очков меньше стоимости, кнопка не активна
-    upgrade2Button.disabled = score < upgrade2Cost; // Если очков меньше стоимости, кнопка не активна
+// Обновление отображения кликов
+function updateClickCount() {
+  clickCountDisplay.textContent = clickCount;
 }
 
-// Обработчик покупки улучшения 1
-upgrade1Button.addEventListener('click', () => {
-    if (score >= upgrade1Cost) {
-        score -= upgrade1Cost; // Отнимаем очки за улучшение
-        updateUI(); // Обновляем интерфейс
-    }
+// Купить автоматический кликер
+buyAutoClickerButton.addEventListener('click', () => {
+  if (clickCount >= autoClickerCost && !autoClickerActive) {
+    clickCount -= autoClickerCost;
+    autoClickerActive = true;
+    updateClickCount();
+    startAutoClicker();
+  }
 });
 
-// Обработчик покупки улучшения 2
-upgrade2Button.addEventListener('click', () => {
-    if (score >= upgrade2Cost) {
-        score -= upgrade2Cost; // Отнимаем очки за улучшение
-        updateUI(); // Обновляем интерфейс
-    }
+// Купить ускорение кликов
+buySpeedUpButton.addEventListener('click', () => {
+  if (clickCount >= speedUpCost && !speedUpActive) {
+    clickCount -= speedUpCost;
+    speedUpActive = true;
+    updateClickCount();
+  }
 });
 
-// Изначальное обновление интерфейса
-updateUI();
+// Автоматический кликер
+function startAutoClicker() {
+  setInterval(() => {
+    if (autoClickerActive) {
+      clickCount++;
+      updateClickCount();
+    }
+  }, 1000);
+}
