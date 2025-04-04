@@ -1,115 +1,150 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Мой Кликер</title>
+    <title>Clicker Game</title>
     <style>
         body {
-            background: linear-gradient(to right, #ff7e5f, #feb47b);
             font-family: 'Arial', sans-serif;
-            text-align: center;
-            color: white;
-            padding: 20px;
+            background-color: #f5f5f5;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
 
-        #clickButton {
+        .game-container {
+            text-align: center;
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #fff;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            width: 400px;
+        }
+
+        .title {
+            font-size: 32px;
+            margin-bottom: 20px;
+            color: #ff6347;
+        }
+
+        .button {
+            padding: 15px;
             background-color: #ff6347;
             border: none;
-            padding: 20px;
-            font-size: 24px;
-            cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
-            border-radius: 10px;
-        }
-
-        #clickButton:hover {
-            background-color: #ff4500;
-            transform: scale(1.1);
-        }
-
-        #score {
-            font-size: 48px;
-            margin-top: 20px;
-        }
-
-        #shop {
-            margin-top: 30px;
-        }
-
-        .shop-item {
-            background-color: #6a5acd;
-            padding: 15px;
-            margin: 10px;
-            border-radius: 10px;
             color: white;
             font-size: 20px;
             cursor: pointer;
-            transition: background-color 0.3s, transform 0.2s;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
 
-        .shop-item:hover {
-            background-color: #483d8b;
-            transform: scale(1.05);
+        .button:hover {
+            background-color: #e55347;
         }
 
-        .btn-shop {
-            font-size: 20px;
-            margin-top: 10px;
-            background-color: #32cd32;
-            padding: 10px;
-            border: none;
+        .stats {
+            font-size: 18px;
+            margin: 20px 0;
+        }
+
+        .store {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f4f4f4;
             border-radius: 10px;
-            cursor: pointer;
         }
 
-        .btn-shop:hover {
-            background-color: #228b22;
+        .store button {
+            background-color: #32cd32;
+            color: white;
+            font-size: 18px;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            margin-top: 10px;
+            border-radius: 5px;
         }
+
+        .store button:hover {
+            background-color: #2e8b57;
+        }
+
+        .store .item {
+            margin-bottom: 10px;
+        }
+
     </style>
 </head>
 <body>
-
-    <h1>Добро пожаловать в Кликер!</h1>
-
-    <button id="clickButton">Кликни меня!</button>
-
-    <div id="score">Очки: 0</div>
-
-    <div id="shop">
-        <div class="shop-item" onclick="buyUpgrade()">Улучшение: Удвоить Очки (100 монет)</div>
-        <button class="btn-shop" onclick="purchaseUpgrade()">Купить улучшение</button>
+    <div class="game-container">
+        <div class="title">Clicker Game</div>
+        <button class="button" onclick="clickButton()">Click Me!</button>
+        <div class="stats">
+            <p>Clicks: <span id="clicks">0</span></p>
+            <p>Coins: <span id="coins">0</span></p>
+        </div>
+        <div class="store">
+            <h3>Store</h3>
+            <div class="item">
+                <p>Auto Clicker (50 coins) - <button onclick="buyAutoClicker()">Buy</button></p>
+            </div>
+            <div class="item">
+                <p>Double Click (100 coins) - <button onclick="buyDoubleClick()">Buy</button></p>
+            </div>
+        </div>
     </div>
 
     <script>
-        let score = 0;
+        let clicks = 0;
         let coins = 0;
-        let doublePoints = false;
+        let autoClicker = false;
+        let doubleClick = false;
 
-        // Обработчик клика по кнопке
-        document.getElementById('clickButton').addEventListener('click', function() {
-            score += doublePoints ? 2 : 1; // Удвоение очков если улучшение куплено
-            coins++;
-            updateDisplay();
-        });
-
-        // Функция обновления отображения очков и монет
-        function updateDisplay() {
-            document.getElementById('score').innerHTML = `Очки: ${score}`;
+        function clickButton() {
+            if (doubleClick) {
+                clicks += 2;
+            } else {
+                clicks += 1;
+            }
+            coins += 1;
+            updateStats();
         }
 
-        // Функция покупки улучшения
-        function buyUpgrade() {
-            if (coins >= 100) {
-                doublePoints = true;
-                coins -= 100;
-                alert('Улучшение куплено! Теперь ваши очки удваиваются!');
+        function buyAutoClicker() {
+            if (coins >= 50) {
+                coins -= 50;
+                autoClicker = true;
+                updateStats();
+                setInterval(() => {
+                    if (autoClicker) {
+                        clicks += 1;
+                        coins += 1;
+                        updateStats();
+                    }
+                }, 1000);
             } else {
-                alert('Недостаточно монет!');
+                alert('Not enough coins!');
             }
-            updateDisplay();
+        }
+
+        function buyDoubleClick() {
+            if (coins >= 100) {
+                coins -= 100;
+                doubleClick = true;
+                updateStats();
+            } else {
+                alert('Not enough coins!');
+            }
+        }
+
+        function updateStats() {
+            document.getElementById("clicks").textContent = clicks;
+            document.getElementById("coins").textContent = coins;
         }
     </script>
-
 </body>
 </html>
