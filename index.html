@@ -1,43 +1,115 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Кликер с магазином</title>
-  <link rel="stylesheet" href="styles.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой Кликер</title>
+    <style>
+        body {
+            background: linear-gradient(to right, #ff7e5f, #feb47b);
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            color: white;
+            padding: 20px;
+        }
+
+        #clickButton {
+            background-color: #ff6347;
+            border: none;
+            padding: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            border-radius: 10px;
+        }
+
+        #clickButton:hover {
+            background-color: #ff4500;
+            transform: scale(1.1);
+        }
+
+        #score {
+            font-size: 48px;
+            margin-top: 20px;
+        }
+
+        #shop {
+            margin-top: 30px;
+        }
+
+        .shop-item {
+            background-color: #6a5acd;
+            padding: 15px;
+            margin: 10px;
+            border-radius: 10px;
+            color: white;
+            font-size: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .shop-item:hover {
+            background-color: #483d8b;
+            transform: scale(1.05);
+        }
+
+        .btn-shop {
+            font-size: 20px;
+            margin-top: 10px;
+            background-color: #32cd32;
+            padding: 10px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .btn-shop:hover {
+            background-color: #228b22;
+        }
+    </style>
 </head>
 <body>
-  <div class="container">
-    <header>
-      <h1>Мой Кликер</h1>
-    </header>
 
-    <main>
-      <section class="game">
-        <div class="clicker">
-          <button id="click-button" class="click-button">Кликни!</button>
-          <p>Кликов: <span id="click-count">0</span></p>
-        </div>
-      </section>
+    <h1>Добро пожаловать в Кликер!</h1>
 
-      <section class="shop">
-        <h2>Магазин</h2>
-        <div class="shop-item">
-          <p>Автоматический кликер (100 монет)</p>
-          <button id="buy-auto-clicker">Купить</button>
-        </div>
-        <div class="shop-item">
-          <p>Ускорение кликов (50 монет)</p>
-          <button id="buy-speed-up">Купить</button>
-        </div>
-      </section>
-    </main>
+    <button id="clickButton">Кликни меня!</button>
 
-    <footer>
-      <p>&copy; 2025 Мой Кликер. Все права защищены.</p>
-    </footer>
-  </div>
+    <div id="score">Очки: 0</div>
 
-  <script src="script.js"></script>
+    <div id="shop">
+        <div class="shop-item" onclick="buyUpgrade()">Улучшение: Удвоить Очки (100 монет)</div>
+        <button class="btn-shop" onclick="purchaseUpgrade()">Купить улучшение</button>
+    </div>
+
+    <script>
+        let score = 0;
+        let coins = 0;
+        let doublePoints = false;
+
+        // Обработчик клика по кнопке
+        document.getElementById('clickButton').addEventListener('click', function() {
+            score += doublePoints ? 2 : 1; // Удвоение очков если улучшение куплено
+            coins++;
+            updateDisplay();
+        });
+
+        // Функция обновления отображения очков и монет
+        function updateDisplay() {
+            document.getElementById('score').innerHTML = `Очки: ${score}`;
+        }
+
+        // Функция покупки улучшения
+        function buyUpgrade() {
+            if (coins >= 100) {
+                doublePoints = true;
+                coins -= 100;
+                alert('Улучшение куплено! Теперь ваши очки удваиваются!');
+            } else {
+                alert('Недостаточно монет!');
+            }
+            updateDisplay();
+        }
+    </script>
+
 </body>
 </html>
